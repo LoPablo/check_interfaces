@@ -962,9 +962,11 @@ main(int argc, char *argv[])
             if ((!interfaces[i].status || interfaces[i].err_disable) && !interfaces[i].ignore && !interfaces[i].admin_down) {
                 if (crit_on_down_flag) {
                     addstr(&perf, "[CRITICAL] ");
-                    errorflag++;
-                    /* show the alias if configured */
-                    if (get_names_flag && strlen(interfaces[i].name)) {
+                    errorflag++;                    
+                } else {
+                    addstr(&perf, "[OK] ");
+                }
+                if (get_names_flag && strlen(interfaces[i].name)) {
                         addstr(&out, ", %s", interfaces[i].name);
                         addstr(&perf, "%s is down", interfaces[i].name);
                     } else {
@@ -981,13 +983,6 @@ main(int argc, char *argv[])
                         if (interfaces[i].err_disable)
                             addstr(&out, " (errdisable)");
                     }
-                } else {
-                    addstr(&perf, "[OK] ");
-                    if (get_names_flag && strlen(interfaces[i].name))
-                        addstr(&perf, "%s is up", interfaces[i].name);
-                    else
-                        addstr(&perf, "%s is up", interfaces[i].descr);
-                }
             } else if (interfaces[i].admin_down && print_all_flag) {
                 addstr(&perf, "[OK] %s is down (administrative down)",
                 (get_names_flag && strlen(interfaces[i].name)) ? interfaces[i].name : interfaces[i].descr);
