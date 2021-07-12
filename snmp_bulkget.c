@@ -923,7 +923,7 @@ main(int argc, char *argv[])
                     }
                     } else {
                         addstr(&out, ", %s", interfaces[i].descr);
-                        addstr(&perf, "%s is down", interfaces[i].descr);
+                        addstr(&perf, "%s penis is down", interfaces[i].descr);
                     }
                     if (interfaces[i].err_disable)
                         addstr(&perf, " (errdisable)");
