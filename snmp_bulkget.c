@@ -1034,9 +1034,7 @@ main(int argc, char *argv[])
 
 
     /* now print performance data */
-    printf("%*s | interfaces::check_multi::plugins=%d time=%.2Lf", (int)out.len, out.text, (count - ignore_count), (((long double)tv.tv_sec + ((long double)tv.tv_usec/1000000)) - starttime ));
-    if (uptime)
-            printf(" %sdevice::check_snmp::uptime=%us", prefix?prefix:"", uptime);
+    printf("%*s |", (int)out.len, out.text);
 
     for (i=0;i<ifNumber;i++)  {
         if (interfaces[i].descr && !interfaces[i].ignore && (!interfaces[i].admin_down || print_all_flag)) {
