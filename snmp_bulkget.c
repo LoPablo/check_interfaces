@@ -868,6 +868,7 @@ main(int argc, char *argv[])
                     interfaces[i].ignore = 1;
                 }
             }
+        }
         regfree(&re);
 
     if (exclude_list)
