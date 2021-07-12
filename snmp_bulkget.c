@@ -995,7 +995,7 @@ main(int argc, char *argv[])
                     addstr(&perf, "[WARNING]");
 
                 if (get_names_flag && strlen(interfaces[i].name))
-                    addstr(&perf, " %s is up", interfaces[i].name);
+                    addstr(&perf, " %s (%s) is up", interfaces[i].name, interfaces[i].desc);
                 else
                     addstr(&perf, " %s is up", interfaces[i].descr);
             }
