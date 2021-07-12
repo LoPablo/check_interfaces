@@ -815,14 +815,6 @@ main(int argc, char *argv[])
                             if (vars->type == ASN_COUNTER64)
                                 interfaces[j].outOctets = convertto64((vars->val.counter64), 0);
                             break;
-                        case 2: /* ifInUcastPkts */
-                            if (vars->type == ASN_COUNTER)
-                                interfaces[j].inUcast = *(vars->val.integer);
-                            break;
-                        case 3: /* ifOutUcastPkts */
-                            if (vars->type == ASN_COUNTER)
-                                interfaces[j].outUcast = *(vars->val.integer);
-                            break;
                         case 4: /* ifSpeed */
                             /* don't overwrite a high-speed value */
                             if (vars->type == ASN_GAUGE && !(interfaces[j].speed))
@@ -1090,8 +1082,6 @@ main(int argc, char *argv[])
 
 
     printf("%*s | interfaces::check_multi::plugins=%d time=%.2Lf", (int)out.len, out.text, (count - ignore_count), (((long double)tv.tv_sec + ((long double)tv.tv_usec/1000000)) - starttime ));
-    if (uptime)
-            printf(" %sdevice::check_snmp::uptime=%us", prefix?prefix:"", uptime);
 
     for (i=0;i<ifNumber;i++)  {
         if (interfaces[i].descr && !interfaces[i].ignore && (!interfaces[i].admin_down || print_all_flag)) {
@@ -1099,7 +1089,6 @@ main(int argc, char *argv[])
             printf("%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
             printf(" %s=%luc %s=%luc", if_vars[2], interfaces[i].inDiscards, if_vars[3], interfaces[i].outDiscards);
             printf(" %s=%luc %s=%luc", if_vars[4], interfaces[i].inErrors, if_vars[5], interfaces[i].outErrors);
-            printf(" %s=%luc %s=%luc", if_vars[6], interfaces[i].inUcast, if_vars[7], interfaces[i].outUcast);
             if (speed)
                 printf(" %s=%llu", if_vars[8], speed);
             else
@@ -1453,10 +1442,6 @@ void set_value(struct ifStruct *oldperfdata, char *interface, char *var, u64 val
             else if (strcmp(var, if_vars[5]) == 0)
                 oldperfdata[i].outErrors = value;
             else if (strcmp(var, if_vars[6]) == 0)
-                oldperfdata[i].inUcast = value;
-            else if (strcmp(var, if_vars[7]) == 0)
-                oldperfdata[i].outUcast = value;
-            else if (strcmp(var, if_vars[8]) == 0)
                 oldperfdata[i].speed = value;
 
             continue;
