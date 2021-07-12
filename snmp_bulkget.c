@@ -850,7 +850,7 @@ main(int argc, char *argv[])
                 status =  !regexec(&re, interfaces[i].descr, (size_t) 0, NULL, 0) ||
                           (get_aliases_flag && !(regexec(&re, interfaces[i].alias, (size_t) 0, NULL, 0)));
             status2 = 0;
-            if (status && exclude_list) {
+            if (exclude_list) {
                 if (get_names_flag)
                     status2 = !regexec(&exclude_re, interfaces[i].name, (size_t) 0, NULL, 0) ||
                               (get_aliases_flag && !(regexec(&re, interfaces[i].alias, (size_t) 0, NULL, 0)));
