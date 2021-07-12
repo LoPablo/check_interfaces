@@ -1055,16 +1055,6 @@ value */
         printf("WARNING:");
     else
         printf("OK:");
-#ifdef DEBUG
-    fprintf(stderr, " %d interfaces found", ifNumber);
-    if (list)
-        printf(", of which %d matched the regex. ", count);
-#else
-    if (list)
-        printf(" %d interface%s found", count, (count == 1) ? "" : "s");
-    else
-        printf(" %d interface%s found", ifNumber, (ifNumber == 1) ? "" : "s");
-#endif
 
     /* now print performance data */
     printf("%*s |", (int)out.len, out.text);
