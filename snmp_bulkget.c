@@ -199,7 +199,6 @@ main(int argc, char *argv[])
         {"match-aliases",     no_argument,  NULL,   'A'},
         {"bandwidth",   required_argument,  NULL,   'b'},
         {"community",   required_argument,  NULL,   'c'},
-        {"down-is-ok",  no_argument,        NULL,   'd'},
         {"errors",      required_argument,  NULL,   'e'},
         {"out-errors",  required_argument,  NULL,   'f'},
         {"hostname",    required_argument,  NULL,   'h'},
@@ -924,8 +923,8 @@ main(int argc, char *argv[])
                     addstr(&perf, "[OK] ");
                 }
                 if (get_names_flag && strlen(interfaces[i].name)) {
-                        addstr(&out, ", %s", interfaces[i].name);
-                        addstr(&perf, "%s is down", interfaces[i].name);
+                        addstr(&out, ", %s (%s)", interfaces[i].name, interfaces[i].descr);
+                        addstr(&perf, "%s (%s) is down", interfaces[i].name, interfaces[i].descr);
                     } else {
                         addstr(&out, ", %s", interfaces[i].descr);
                         addstr(&perf, "%s is down", interfaces[i].descr);
@@ -1280,7 +1279,6 @@ int usage(char *progname)
     printf(" -k|--priv-proto\tSNMPv3 Privacy Protocol (AES|DES)\n");
     printf(" -K|--priv-phrase\tSNMPv3 Privacy Phrase\n");
     printf(" -u|--user\t\tSNMPv3 User\n");
-    printf(" -d|--down-is-ok\tdisables critical alerts for down interfaces\n");
     printf(" -a|--aliases\t\tretrieves the interface description\n");
     printf(" -A|--match-aliases\talso match against aliases (Option -a automatically enabled)\n");
     printf(" -D|--debug-print\tlist administrative down interfaces in perfdata\n");
