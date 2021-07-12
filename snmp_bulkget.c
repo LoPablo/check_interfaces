@@ -1036,11 +1036,12 @@ main(int argc, char *argv[])
     /* now print performance data */
     for (i=0;i<ifNumber;i++)  {
         if (interfaces[i].descr && !interfaces[i].ignore && (!interfaces[i].admin_down || print_all_flag)) {
-            printf(" %s%s", prefix?prefix:"", get_names_flag ? interfaces[i].name : oldperfdata[i].descr);
+            printf(" %s%s::", prefix?prefix:"", get_names_flag ? interfaces[i].name : oldperfdata[i].descr);
             printf("%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
             printf(" %s=%luc %s=%luc", if_vars[2], interfaces[i].inDiscards, if_vars[3], interfaces[i].outDiscards);
             printf(" %s=%luc %s=%luc", if_vars[4], interfaces[i].inErrors, if_vars[5], interfaces[i].outErrors);
             if (speed)
+
                 printf(" %s=%llu", if_vars[8], speed);
             else
                 printf(" %s=%llu", if_vars[8], interfaces[i].speed);
