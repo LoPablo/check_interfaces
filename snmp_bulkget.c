@@ -651,7 +651,6 @@ int main(int argc, char *argv[]) {
                     if (vars->type == ASN_OCTET_STR) {
                         i = (int)vars->name[(vars->name_length - 1)];
                         if (i) {
-                          printf("%s",vars->val.string);
                             MEMCPY(interfaces[count].alias, vars->val.string, vars->val_len);
                             TERMSTR(interfaces[count].alias, vars->val_len);
                         }
@@ -836,6 +835,7 @@ int main(int argc, char *argv[]) {
 
         count = 0;
         for (i = 0; i < ifNumber; i++) {
+          printf("%s",interfaces[i].alias);
             /* When --if-name is set ignore descr in favor of name, else use old
        * behaviour */
             status = !regexec(&re, interfaces[i].descr, (size_t)0, NULL, 0) ||
