@@ -797,21 +797,21 @@ int main(int argc, char *argv[]) {
                             if (vars->type == ASN_COUNTER64)
                                 interfaces[j].outOctets = convertto64((vars->val.counter64), 0);
                             break;
-                        case 3: /* ifSpeed */
+                        case 2: /* ifSpeed */
                             /* don't overwrite a high-speed value */
                             if (vars->type == ASN_GAUGE && !(interfaces[j].speed))
                                 interfaces[j].speed = *(vars->val.integer);
                             break;
-                        case 4: /* ifHighSpeed */
+                        case 3: /* ifHighSpeed */
                             if (vars->type == ASN_GAUGE)
                                 /* convert to bits / sec */
                                 interfaces[j].speed = ((u64) * (vars->val.integer)) * 1000000ULL;
                             break;
-                        case 5: /* alias */
+                        case 4: /* alias */
                             if (vars->type == ASN_OCTET_STR)
                                 MEMCPY(interfaces[j].alias, vars->val.string, vars->val_len);
                             break;
-                        case 6: /* name */
+                        case 5: /* name */
                             if (vars->type == ASN_OCTET_STR)
                                 MEMCPY(interfaces[j].name, vars->val.string, vars->val_len);
                             break;
@@ -835,7 +835,6 @@ int main(int argc, char *argv[]) {
 
         count = 0;
         for (i = 0; i < ifNumber; i++) {
-          printf("%s",interfaces[i].alias);
             /* When --if-name is set ignore descr in favor of name, else use old
        * behaviour */
             status = !regexec(&re, interfaces[i].descr, (size_t)0, NULL, 0) ||
