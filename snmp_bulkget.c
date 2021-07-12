@@ -927,15 +927,16 @@ int main(int argc, char *argv[]) {
                         addstr(&perf, "%s is down", interfaces[i].descr);
                     }
                 }
-                if (interfaces[i].err_disable)
+                if (interfaces[i].err_disable) {
                     addstr(&perf, " (errdisable)");
+                }
                 if (!interfaces[i].admin_down) {
-                    if (get_aliases_flag && strlen(interfaces[i].alias))
-                        addstr(&out, " (%s) down", interfaces[i].alias);
-                    else
-                        addstr(&out, " down");
-                    if (interfaces[i].err_disable)
+                    if (interfaces[i].should_crit) {
+                        addstr(&out, " down", interfaces[i].alias);
+                    }
+                    if (interfaces[i].err_disable) {
                         addstr(&out, " (errdisable)");
+                    }
                 }
             } else if (interfaces[i].admin_down && print_all_flag) {
                 addstr(&perf, "[OK] %s is down (administrative down)",
