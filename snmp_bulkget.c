@@ -842,19 +842,11 @@ main(int argc, char *argv[])
         count = 0;
         for (i=0; i < ifNumber; i++) {
             /* When --if-name is set ignore descr in favor of name, else use old behaviour */
-            if (get_names_flag)
-                status =  !regexec(&re, interfaces[i].name, (size_t) 0, NULL, 0) ||
-                           (get_aliases_flag && !(regexec(&re, interfaces[i].alias, (size_t) 0, NULL, 0)));
-            else
-                status =  !regexec(&re, interfaces[i].descr, (size_t) 0, NULL, 0) ||
+            status =  !regexec(&re, interfaces[i].descr, (size_t) 0, NULL, 0) ||
                           (get_aliases_flag && !(regexec(&re, interfaces[i].alias, (size_t) 0, NULL, 0)));
             status2 = 0;
             if (exclude_list) {
-                if (get_names_flag)
-                    status2 = !regexec(&exclude_re, interfaces[i].name, (size_t) 0, NULL, 0) ||
-                              (get_aliases_flag && !(regexec(&re, interfaces[i].alias, (size_t) 0, NULL, 0)));
-                else
-                    status2 = !regexec(&exclude_re, interfaces[i].descr, (size_t) 0, NULL, 0) ||
+                status2 = !regexec(&exclude_re, interfaces[i].descr, (size_t) 0, NULL, 0) ||
                               (get_aliases_flag && !(regexec(&exclude_re, interfaces[i].alias, (size_t) 0, NULL, 0)));
             } 
             if (status2) {
@@ -873,9 +865,7 @@ main(int argc, char *argv[])
         regfree(&exclude_re);
 
         if (count) {
-#ifdef DEBUG
-            fprintf(stderr, "- %d interface%s found\n", count, (count==1)?"":"s");
-#endif
+
         } else {
             printf("- no interfaces matched regex");
             exit (0);
