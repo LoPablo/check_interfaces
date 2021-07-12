@@ -915,8 +915,8 @@ main(int argc, char *argv[])
                 if (get_names_flag && strlen(interfaces[i].name)) {
                         
                     if(get_aliases_flag && strlen(interfaces[i].alias)) {
-                        addstr(&out, ", %s (%s)", interfaces[i].name, interfaces[i].alias);
-                        addstr(&perf, "%s (%s) is down", interfaces[i].name, interfaces[i].alias);
+                        addstr(&out, ", %s what(%s)", interfaces[i].name, interfaces[i].alias);
+                        addstr(&perf, "%s ioioi(%s) is down", interfaces[i].name, interfaces[i].alias);
                     } else{
                         addstr(&out, ", %s (pe%s)", interfaces[i].name, interfaces[i].descr);
                         addstr(&perf, "%s (pe%s) is down", interfaces[i].name, interfaces[i].descr);
