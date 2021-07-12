@@ -42,6 +42,7 @@ typedef unsigned long long u64;
 
 struct ifStruct {
     int     ignore;
+    int     should_crit;
     int     admin_down;
     int     print_all_flag;
     int     index;
@@ -82,19 +83,6 @@ static char *if_vars_default[] = {
             "inUcast",
             "outUcast",
             "speed" };
-
-static char *if_vars_cisco[] = {
-            "inOctets",
-            "outOctets",
-            "inDiscards",
-            "outDiscards",
-            "inCRCs",
-            "outCollisions",
-            "inUcast",
-            "outUcast",
-            "speed" };
-
-
 
 
 /*

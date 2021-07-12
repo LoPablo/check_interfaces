@@ -123,7 +123,6 @@ main(int argc, char *argv[])
     int     errorflag = 0;
     int     warnflag = 0;
     int     lastifflag = 0;
-    int     crit_on_down_flag = 1;
     int     get_aliases_flag = 0;
     int     match_aliases_flag = 0;
     int     get_names_flag = 0;
@@ -231,7 +230,7 @@ main(int argc, char *argv[])
     };
 
 
-    while ((opt = getopt_long(argc, argv, "aAb:c:dDe:f:h:i:j:J:k:K:m:Np:P:r:R:s:t:u:x:?", longopts, NULL)) != -1)
+    while ((opt = getopt_long(argc, argv, "aAb:c:De:f:h:i:j:J:k:K:m:Np:P:r:R:s:t:u:x:?", longopts, NULL)) != -1)
     {
         switch(opt)
         {
@@ -247,9 +246,6 @@ main(int argc, char *argv[])
                 break;
             case 'c':
                 community = optarg;
-                break;
-            case 'd':
-                crit_on_down_flag = 0;
                 break;
             case 'D':
                 print_all_flag = 1;
@@ -861,11 +857,12 @@ main(int argc, char *argv[])
                 else
                     status2 = !regexec(&exclude_re, interfaces[i].descr, (size_t) 0, NULL, 0) ||
                               (get_aliases_flag && !(regexec(&exclude_re, interfaces[i].alias, (size_t) 0, NULL, 0)));
-            } if (status && !status2) {
-                count++;
-#ifdef DEBUG
-                fprintf(stderr, "Interface %d (%s) matched\n", interfaces[i].index, interfaces[i].descr);
-#endif
+            } if (status) {
+                if (!status2){
+                    count++;
+                }else{
+                    interfaces[i].should_crit = 1;
+                }
             } else
                 interfaces[i].ignore = 1;
         }
@@ -918,7 +915,7 @@ main(int argc, char *argv[])
             int warn = 0;
 
             if ((!interfaces[i].status || interfaces[i].err_disable) && !interfaces[i].ignore && !interfaces[i].admin_down) {
-                if (crit_on_down_flag) {
+                if (interfaces[i].should_crit) {
                     addstr(&perf, "[CRITICAL] ");
                     errorflag++;                    
                 } else {
@@ -1313,25 +1310,8 @@ int parse_perfdata(char *oldperfdatap, struct ifStruct *oldperfdata, char *prefi
 
     /* first split at spaces */
     for ( word = strtok_r(oldperfdatap, " ", &last); word; word = strtok_r(NULL, " ", &last)) {
-        if((ptr = strstr(word, "::check_multi::plugins="))) {
-#ifdef DEBUG
-            /* check multi perfdata found */
-            plugins = strtol(strchr(word, '=') + 1, NULL, 10);
-            fprintf(stderr, "Found %d plugins\n", plugins);
-#endif
-            continue;
-        }
-
-        if((ptr = strstr(word, "device::check_snmp::"))) {
-#ifdef DEBUG
-            /* uptime found */
-            uptime_old = strtol(strchr(word, '=') + 1, NULL, 10);
-            fprintf(stderr, "Found %u uptime\n", uptime_old);
-#endif
-            continue;
-        }
-
-        if((ptr = strstr(word, "::check_snmp::"))) {
+    
+        if((ptr = strstr(word, "::"))) {
             /* new interface found, get its name (be aware that this is the "cleaned" string */
             interface = strtok_r(word, ":", &last2);
 
@@ -1344,7 +1324,7 @@ int parse_perfdata(char *oldperfdatap, struct ifStruct *oldperfdata, char *prefi
            if (interface)
                 fprintf(stderr, "interface %s found\n", interface);
 #endif
-           word  = (ptr + strlen("::check_snmp::"));
+           word  = (ptr + strlen("::"));
         }
 
         /* finally split the name=value pair */
@@ -1358,7 +1338,6 @@ int parse_perfdata(char *oldperfdatap, struct ifStruct *oldperfdata, char *prefi
             set_value(oldperfdata, interface, var, value, valstr + 1);
 
     }
-
 
     return (0);
 }
