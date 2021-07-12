@@ -102,10 +102,9 @@ static char *if_vars_cisco[] = {
  */
 static char    *oid_if_bulkget[] = {".1.3.6.1.2.1.1.3", ".1.3.6.1.2.1.2.1", ".1.3.6.1.2.1.2.2.1.2", 0}; /* "uptime", "ifNumber", "ifDescr" */
 static char    *oid_if_get[] = {".1.3.6.1.2.1.1.3.0", ".1.3.6.1.2.1.2.1.0", ".1.3.6.1.2.1.2.2.1.2.1", 0}; /* "uptime", "ifNumber", "ifDescr" */
-static char    *oid_if_bintec[] = {".1.3.6.1.2.1.1.3.0", ".1.3.6.1.2.1.2.1.0", ".1.3.6.1.2.1.2.2.1.2.0", 0}; /* "uptime", "ifNumber", "ifDescr" */
 static char    *oid_alias_bulkget[] = {".1.3.6.1.2.1.31.1.1.1.18", 0}; /* "alias" */
 static char    *oid_alias_get[] = {".1.3.6.1.2.1.31.1.1.1.18.1", 0}; /* "alias" */
-static char    *oid_alias_bintec[] = {".1.3.6.1.2.1.31.1.1.1.18.0", 0}; /* "alias" */
+
 
 static char    *oid_vals_default[] = {
     ".1.3.6.1.2.1.2.2.1.7",    /* ifAdminStatus */
@@ -119,23 +118,9 @@ static char    *oid_vals_default[] = {
     0
 };
 
-static char    *oid_vals_cisco[] = {
-    ".1.3.6.1.2.1.2.2.1.7",    /* ifAdminStatus */
-    ".1.3.6.1.2.1.2.2.1.8",    /* ifOperStatus */
-    ".1.3.6.1.2.1.2.2.1.10",   /* ifInOctets */
-    ".1.3.6.1.2.1.2.2.1.13",   /* ifInDiscards */
-    ".1.3.6.1.4.1.9.2.2.1.1.12",   /* locIfInCRC */
-    ".1.3.6.1.2.1.2.2.1.16",   /* ifOutOctets */
-    ".1.3.6.1.2.1.2.2.1.19",   /* ifOutDiscards */
-    ".1.3.6.1.4.1.9.2.2.1.1.25",   /* locIfCollisions */
-    0
-};
-
 static char *oid_extended[] = {
     ".1.3.6.1.2.1.31.1.1.1.6", /* ifHCInOctets */
     ".1.3.6.1.2.1.31.1.1.1.10",/* ifHCOutOctets */
-    ".1.3.6.1.2.1.2.2.1.11",   /* ifInUcastPkts */
-    ".1.3.6.1.2.1.2.2.1.17",   /* ifOutUcastPkts */
     ".1.3.6.1.2.1.2.2.1.5",    /* ifSpeed */
     ".1.3.6.1.2.1.31.1.1.1.15",/* ifHighSpeed */
     ".1.3.6.1.2.1.31.1.1.1.18",/* alias */

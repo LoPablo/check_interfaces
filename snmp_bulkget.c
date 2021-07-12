@@ -410,10 +410,6 @@ main(int argc, char *argv[])
         oid_ifp = oid_if_get;
         size = (sizeof(oid_if_get) / sizeof(char *)) - 1;
         oid_aliasp = oid_alias_get;
-    } else if (mode == BINTEC) {
-        oid_ifp = oid_if_bintec;
-        size = (sizeof(oid_if_bintec) / sizeof(char *)) - 1;
-        oid_aliasp = oid_alias_bintec;
     } else {
         oid_ifp = oid_if_bulkget;
         size = (sizeof(oid_if_bulkget) / sizeof(char *)) - 1;
@@ -422,11 +418,6 @@ main(int argc, char *argv[])
 
     /* allocate the space for the interface OIDs */
     OIDp = (struct OIDStruct *) calloc(size, sizeof(struct OIDStruct));
-
-    if (mode == CISCO) {
-        if_vars = if_vars_cisco;
-        oid_vals = oid_vals_cisco;
-    }
 
     /* get the number of interfaces, and their index numbers
      *
@@ -444,7 +435,7 @@ main(int argc, char *argv[])
         else {
             /* we have not received all interfaces in the preceding packet, so fetch the next lot */
 
-            if (mode == BINTEC || mode == NONBULK)
+            if (mode == NONBULK)
                 pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
             else {
                 pdu = snmp_pdu_create(SNMP_MSG_GETBULK);
@@ -623,7 +614,7 @@ main(int argc, char *argv[])
             else {
                 /* we have not received all aliases in the preceding packet, so fetch the next lot */
 
-                if (mode == BINTEC || mode == NONBULK)
+                if (mode == NONBULK)
                     pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
                 else {
                     pdu = snmp_pdu_create(SNMP_MSG_GETBULK);
@@ -815,21 +806,21 @@ main(int argc, char *argv[])
                             if (vars->type == ASN_COUNTER64)
                                 interfaces[j].outOctets = convertto64((vars->val.counter64), 0);
                             break;
-                        case 4: /* ifSpeed */
+                        case 3: /* ifSpeed */
                             /* don't overwrite a high-speed value */
                             if (vars->type == ASN_GAUGE && !(interfaces[j].speed))
                                 interfaces[j].speed = *(vars->val.integer);
                             break;
-                        case 5: /* ifHighSpeed */
+                        case 4: /* ifHighSpeed */
                             if (vars->type == ASN_GAUGE)
                                 /* convert to bits / sec */
                                 interfaces[j].speed = ((u64)*(vars->val.integer)) * 1000000ULL;
                             break;
-                        case 6: /* alias */
+                        case 5: /* alias */
                             if (vars->type == ASN_OCTET_STR)
                                 MEMCPY(interfaces[j].alias, vars->val.string, vars->val_len);
                             break;
-                        case 7: /* name */
+                        case 6: /* name */
                             if (vars->type == ASN_OCTET_STR)
                                 MEMCPY(interfaces[j].name, vars->val.string, vars->val_len);
                             break;
@@ -842,31 +833,6 @@ main(int argc, char *argv[])
                 }
             }
 
-            /* now fetch the Cisco-specific extended oids */
-            if (mode == CISCO && create_request(ss, &OIDp, oid_extended_cisco, interfaces[j].index, &response)) {
-                for (vars = response->variables; vars; vars = vars->next_variable) {
-                    k = -1;
-                    /* compare the received value to the requested value */
-                    for ( i = 0; oid_extended_cisco[i]; i++) {
-                        if (!memcmp(OIDp[i].name, vars->name, OIDp[i].name_len*sizeof(oid))) {
-                            k = i;
-                            break;
-                        }
-                    }
-
-                    switch(k) /* the offset into oid_extended_cisco */
-                    {
-                        case 0: /* portAdditionalOperStatus */
-                            if (vars->type == ASN_OCTET_STR)
-                                interfaces[j].err_disable = !!(vars->val.string[1] & (unsigned char)32u);
-                            break;
-                    }
-                }
-                if (response) {
-                    snmp_free_pdu(response);
-                    response = 0;
-                }
-            }
         }
     }
 
@@ -996,16 +962,6 @@ main(int argc, char *argv[])
                     else
                         addstr(&perf, " has");
 
-                    /* if we are not in cisco mode simply use "errors" */
-
-                    if (mode != CISCO)
-                        addstr(&perf, " errors");
-                    else {
-                         if (interfaces[i].inErrors > (oldperfdata[i].inErrors + (unsigned long) err_tolerance))
-                              addstr(&perf, " CRC errors");
-                         if (interfaces[i].outErrors > (oldperfdata[i].outErrors + (unsigned long) coll_tolerance))
-                              addstr(&perf, " collisions");
-                    }
                     if (get_names_flag && strlen(interfaces[i].name))
                         addstr(&out, ", %s has %lu errors", interfaces[i].name,
                             (interfaces[i].inErrors + interfaces[i].outErrors - oldperfdata[i].inErrors - oldperfdata[i].outErrors));
@@ -1079,13 +1035,9 @@ main(int argc, char *argv[])
 
 
     /* now print performance data */
-
-
-    printf("%*s | interfaces::check_multi::plugins=%d time=%.2Lf", (int)out.len, out.text, (count - ignore_count), (((long double)tv.tv_sec + ((long double)tv.tv_usec/1000000)) - starttime ));
-
     for (i=0;i<ifNumber;i++)  {
         if (interfaces[i].descr && !interfaces[i].ignore && (!interfaces[i].admin_down || print_all_flag)) {
-            printf(" %s%s::check_snmp::", prefix?prefix:"", get_names_flag ? interfaces[i].name : oldperfdata[i].descr);
+            printf(" %s%s", prefix?prefix:"", get_names_flag ? interfaces[i].name : oldperfdata[i].descr);
             printf("%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
             printf(" %s=%luc %s=%luc", if_vars[2], interfaces[i].inDiscards, if_vars[3], interfaces[i].outDiscards);
             printf(" %s=%luc %s=%luc", if_vars[4], interfaces[i].inErrors, if_vars[5], interfaces[i].outErrors);
@@ -1308,8 +1260,6 @@ int usage(char *progname)
     printf(" -c|--community\t\tcommunity (default public)\n");
     printf(" -r|--regex\t\tinterface list regexp\n");
     printf(" -R|--exclude-regex\tinterface list negative regexp\n");
-    printf(" -e|--errors\t\tnumber of in errors (CRC errors for cisco) to consider a warning (default 50)\n");
-    printf(" -f|--out-errors\tnumber of out errors (collisions for cisco) to consider a warning (default same as in errors)\n");
     printf(" -p|--perfdata\t\tlast check perfdata\n");
     printf(" -P|--prefix\t\tprefix interface names with this label\n");
     printf(" -t|--lastcheck\t\tlast checktime (unixtime)\n");
@@ -1421,11 +1371,7 @@ void set_value(struct ifStruct *oldperfdata, char *interface, char *var, u64 val
 {
     int i;
     static char **if_vars;
-
-    if (mode == CISCO)
-        if_vars = if_vars_cisco;
-    else
-        if_vars = if_vars_default;
+    if_vars = if_vars_default;
 
     for (i=0; i < ifNumber; i++) {
         if (strcmp(interface, oldperfdata[i].descr) == 0) {
@@ -1550,13 +1496,6 @@ void create_pdu(int mode, char **oidlist, netsnmp_pdu **pdu, struct OIDStruct **
 
     if (mode == NONBULK)
         *pdu = snmp_pdu_create(SNMP_MSG_GET);
-
-    else if (mode == BINTEC) {
-        /* we cannot use a bulk get for bintec
-         * and the oids don't increment properly
-         */
-        *pdu = snmp_pdu_create(SNMP_MSG_GET);
-    }
     else {
         /* get the ifNumber and as many interfaces as possible */
         *pdu = snmp_pdu_create(SNMP_MSG_GETBULK);
