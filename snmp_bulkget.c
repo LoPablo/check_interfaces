@@ -913,8 +913,14 @@ main(int argc, char *argv[])
                     addstr(&perf, "[OK] ");
                 }
                 if (get_names_flag && strlen(interfaces[i].name)) {
+                        
+                    if(get_aliases_flag && strlen(interfaces[i].alias)) {
+                        addstr(&out, ", %s (%s)", interfaces[i].name, interfaces[i].alias);
+                        addstr(&perf, "%s (%s) is down", interfaces[i].name, interfaces[i].alias);
+                    } else{
                         addstr(&out, ", %s (%s)", interfaces[i].name, interfaces[i].descr);
                         addstr(&perf, "%s (%s) is down", interfaces[i].name, interfaces[i].descr);
+                    }
                     } else {
                         addstr(&out, ", %s", interfaces[i].descr);
                         addstr(&perf, "%s is down", interfaces[i].descr);
