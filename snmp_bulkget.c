@@ -918,8 +918,8 @@ main(int argc, char *argv[])
                         addstr(&out, ", %s (%s)", interfaces[i].name, interfaces[i].alias);
                         addstr(&perf, "%s (%s) is down", interfaces[i].name, interfaces[i].alias);
                     } else{
-                        addstr(&out, ", %s (%s)", interfaces[i].name, interfaces[i].descr);
-                        addstr(&perf, "%s (%s) is down", interfaces[i].name, interfaces[i].descr);
+                        addstr(&out, ", %s (pe%s)", interfaces[i].name, interfaces[i].descr);
+                        addstr(&perf, "%s (pe%s) is down", interfaces[i].name, interfaces[i].descr);
                     }
                     } else {
                         addstr(&out, ", %s", interfaces[i].descr);
@@ -991,7 +991,7 @@ main(int argc, char *argv[])
                     addstr(&perf, "[WARNING]");
 
                 if (get_names_flag && strlen(interfaces[i].name))
-                    addstr(&perf, " %s (%s) is up", interfaces[i].name, interfaces[i].descr);
+                    addstr(&perf, " %s (uu%s) is up", interfaces[i].name, interfaces[i].descr);
                 else
                     addstr(&perf, " %s is up", interfaces[i].descr);
             }
