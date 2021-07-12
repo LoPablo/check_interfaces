@@ -857,15 +857,17 @@ main(int argc, char *argv[])
                 else
                     status2 = !regexec(&exclude_re, interfaces[i].descr, (size_t) 0, NULL, 0) ||
                               (get_aliases_flag && !(regexec(&exclude_re, interfaces[i].alias, (size_t) 0, NULL, 0)));
-            } if (status) {
+            } 
+            if (status) {
+                
                 if (!status2){
                     count++;
-                }else{
                     interfaces[i].should_crit = 1;
+                   
+                }else{
+                    interfaces[i].ignore = 1;
                 }
-            } else
-                interfaces[i].ignore = 1;
-        }
+            }
         regfree(&re);
 
     if (exclude_list)
