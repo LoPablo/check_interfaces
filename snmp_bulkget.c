@@ -1057,7 +1057,7 @@ value */
         printf("OK:");
 
     /* now print performance data */
-    printf("%*s |", (int)out.len, out.text);
+    printf("%*s |" (int)out.len, out.text);
 
     for (i = 0; i < ifNumber; i++) {
         if (interfaces[i].descr && !interfaces[i].ignore &&
