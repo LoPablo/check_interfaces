@@ -1031,8 +1031,8 @@ int main(int argc, char *argv[])
                 {
                     if (get_aliases_flag && strlen(interfaces[i].alias))
                     {
-                        addstr(&out, ", %s (%s)", interfaces[i].name, interfaces[i].descr);
-                        addstr(&perf, "%s (%s) is down", interfaces[i].name, interfaces[i].descr);
+                        addstr(&out, ", %s (%s)", interfaces[i].descr, interfaces[i].alias);
+                        addstr(&perf, "%s (%s) is down", interfaces[i].descr, interfaces[i].alias);
                     }
                     else
                     {
