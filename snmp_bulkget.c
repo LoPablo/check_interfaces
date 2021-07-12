@@ -905,34 +905,48 @@ int main(int argc, char *argv[]) {
                 if (interfaces[i].should_crit) {
                     addstr(&perf, "[CRITICAL] ");
                     errorflag++;
+                    if (get_names_flag && strlen(interfaces[i].name)) {
+                        if (get_aliases_flag && strlen(interfaces[i].alias)) {
+                            addstr(&out, ", %s (%s)", interfaces[i].name, interfaces[i].alias);
+                            addstr(&perf, "%s (%s) is down", interfaces[i].name, interfaces[i].alias);
+                        } else {
+                            addstr(&out, ", %s", interfaces[i].name);
+                            addstr(&perf, "%s is down", interfaces[i].name);
+                        }
+                    } else {
+                        if (get_aliases_flag && strlen(interfaces[i].alias)) {
+                            addstr(&out, ", %s (%s)", interfaces[i].descr, interfaces[i].alias);
+                            addstr(&perf, "%s (%s) is down", interfaces[i].descr, interfaces[i].alias);
+                        } else {
+                            addstr(&out, ", %s", interfaces[i].descr);
+                            addstr(&perf, "%s is down", interfaces[i].descr);
+                        }
+                    }
                 } else {
                     addstr(&perf, "[OK] ");
-                }
-                if (get_names_flag && strlen(interfaces[i].name)) {
-                    if (get_aliases_flag && strlen(interfaces[i].alias)) {
-                        addstr(&out, ", %s (%s)", interfaces[i].name, interfaces[i].alias);
-                        addstr(&perf, "%s (%s) is down", interfaces[i].name,
-                               interfaces[i].alias);
+                    if (get_names_flag && strlen(interfaces[i].name)) {
+                        if (get_aliases_flag && strlen(interfaces[i].alias)) {
+                            addstr(&perf, "%s (%s) is down", interfaces[i].name,
+                                   interfaces[i].alias);
+                        } else {
+                            addstr(&perf, "%s is down", interfaces[i].name);
+                        }
                     } else {
-                        addstr(&out, ", %s", interfaces[i].name);
-                        addstr(&perf, "%s is down", interfaces[i].name);
-                    }
-                } else {
-                    if (get_aliases_flag && strlen(interfaces[i].alias)) {
-                        addstr(&out, ", %s (%s)", interfaces[i].descr, interfaces[i].alias);
-                        addstr(&perf, "%s (%s) is down", interfaces[i].descr,
-                               interfaces[i].alias);
-                    } else {
-                        addstr(&out, ", %s", interfaces[i].descr);
-                        addstr(&perf, "%s is down", interfaces[i].descr);
+                        if (get_aliases_flag && strlen(interfaces[i].alias)) {
+                            addstr(&perf, "%s (%s) is down", interfaces[i].descr,
+                                   interfaces[i].alias);
+                        } else {
+                            addstr(&perf, "%s is down", interfaces[i].descr);
+                        }
                     }
                 }
+
                 if (interfaces[i].err_disable) {
                     addstr(&perf, " (errdisable)");
                 }
                 if (!interfaces[i].admin_down) {
                     if (interfaces[i].should_crit) {
-                        addstr(&out, " down", interfaces[i].alias);
+                        addstr(&out, " down");
                     }
                     if (interfaces[i].err_disable) {
                         addstr(&out, " (errdisable)");
