@@ -97,7 +97,7 @@ static int session_retries = 2;
 static long pdu_max_repetitions = 4096L;
 
 int main(int argc, char *argv[]) {
-    FILE* fpOldPerfdata;
+    FILE *fpOldPerfdata;
 
     netsnmp_session session, *ss;
     netsnmp_pdu *pdu;
@@ -316,12 +316,12 @@ int main(int argc, char *argv[]) {
     if (!community) {
         community = default_community;
     }
-        
-    if (exclude_list && !list){
+
+    if (exclude_list && !list) {
         /* use .* as the default regex */
         list = ".*";
     }
-        
+
     /* get the start time */
     gettimeofday(&tv, &tz);
     starttime = (long double)tv.tv_sec + (((long double)tv.tv_usec) / 1000000);
@@ -433,7 +433,6 @@ int main(int argc, char *argv[]) {
 
                 interfaces = (struct ifStruct *)calloc((size_t)ifNumber, sizeof(struct ifStruct));
                 oldperfdata = (struct ifStruct *)calloc((size_t)ifNumber, sizeof(struct ifStruct));
-
             }
 
             for (vars = vars; vars; vars = vars->next_variable) {
@@ -778,20 +777,18 @@ int main(int argc, char *argv[]) {
 
     if (oldperfdatap && lastcheck && oldperfdatap[0]) {
         fpOldPerfdata = fopen(oldperfdatap, "r");
-        char * buffer = 0;
+        char *buffer = 0;
         long length;
-        if (fpOldPerfdata){
-            fseek(fpOldPerfdata,0,SEEK_END);
+        if (fpOldPerfdata) {
+            fseek(fpOldPerfdata, 0, SEEK_END);
             length = ftell(fpOldPerfdata);
             fseek(fpOldPerfdata, 0, SEEK_SET);
-            buffer = malloc(length+1);
+            buffer = malloc(length + 1);
             fread(buffer, 1, length, fpOldPerfdata);
             fclose(fpOldPerfdata);
             buffer[length] = 0;
-            parse_perfdata(buffer, oldperfdata, prefix); 
-        }else{
-            oldperfdatap = 0;
-        }    
+            parse_perfdata(buffer, oldperfdata, prefix);
+        }
     }
 
     for (i = 0; i < ifNumber; i++) {
@@ -919,27 +916,36 @@ int main(int argc, char *argv[]) {
 
     /* now print performance data */
     printf("%*s |", (int)out.len, out.text);
-
+    fpOldPerfdata = fopen(oldperfdatap, "w+");
     for (i = 0; i < ifNumber; i++) {
         if (interfaces[i].descr && !interfaces[i].ignore && (!interfaces[i].admin_down || print_all_flag)) {
             printf(" %s%s::", prefix ? prefix : "", oldperfdata[i].descr);
             //printf("%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
             //printf("%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
-            //printf(" %s=%luc %s=%luc", if_vars[2], interfaces[i].inDiscards, if_vars[3], interfaces[i].outDiscards);
-            //printf(" %s=%luc %s=%luc", if_vars[4], interfaces[i].inErrors, if_vars[5], interfaces[i].outErrors);
-            printf(" %s=%llu %s=%llu", if_vars[7], interfaces[i].inbitps, if_vars[8], interfaces[i].outbitps);
-            
+            printf(" %s=%luc %s=%luc", if_vars[2], interfaces[i].inDiscards, if_vars[3], interfaces[i].outDiscards);
+            printf(" %s=%luc %s=%luc", if_vars[4], interfaces[i].inErrors, if_vars[5], interfaces[i].outErrors);
+            if (lastcheck) {
+                printf(" %s=%llu %s=%llu", if_vars[7], interfaces[i].inbitps, if_vars[8], interfaces[i].outbitps);
+            }
+
             if (speed) {
                 printf(" %s=%llu", if_vars[6], speed);
             } else {
                 printf(" %s=%llu", if_vars[6], interfaces[i].speed);
+            }
+            if (fpOldPerfdata) {
+                fprintf(" %s%s::", prefix ? prefix : "", oldperfdata[i].descr);
+                fprintf("%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
+                fprintf("%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
+                fprintf(" %s=%luc %s=%luc", if_vars[2], interfaces[i].inDiscards, if_vars[3], interfaces[i].outDiscards);
+                fprintf(" %s=%luc %s=%luc", if_vars[4], interfaces[i].inErrors, if_vars[5], interfaces[i].outErrors);
             }
         }
     }
     printf("\n%*s", (int)perf.len, perf.text);
 
     snmp_close(ss);
-    
+
     SOCK_CLEANUP;
     return ((errorflag) ? 2 : ((warnflag) ? 1 : 0));
 }
@@ -976,15 +982,15 @@ u64 subtract64(u64 big64, u64 small64) {
             return 0;
         else {
             /* we assume there was exactly 1 counter rollover - of course there may have been more than 1 if it is a 32 bit counter ... */
-            if (small64 > OFLO32){
-                 return (OFLO64 - small64 + big64);
-            } else{
+            if (small64 > OFLO32) {
+                return (OFLO64 - small64 + big64);
+            } else {
                 return (OFLO32 - small64 + big64);
-            }    
+            }
         }
-    } else{
+    } else {
         return (big64 - small64);
-    } 
+    }
 }
 
 netsnmp_session *start_session(netsnmp_session *session, char *community, char *hostname) {
@@ -1081,13 +1087,13 @@ netsnmp_session *start_session_v3(netsnmp_session *session, char *user, char *au
 
     if ((session->securityLevel == SNMP_SEC_LEVEL_AUTHPRIV) ||
         (session->securityLevel == SNMP_SEC_LEVEL_AUTHNOPRIV)) {
-        if (generate_Ku(session->securityAuthProto, session->securityAuthProtoLen, (unsigned char *)auth_pass, strlen(auth_pass), session->securityAuthKey, &session->securityAuthKeyLen) != SNMPERR_SUCCESS){
+        if (generate_Ku(session->securityAuthProto, session->securityAuthProtoLen, (unsigned char *)auth_pass, strlen(auth_pass), session->securityAuthKey, &session->securityAuthKeyLen) != SNMPERR_SUCCESS) {
             printf("Error generating AUTH sess\n");
-        }  
+        }
         if (session->securityLevel == SNMP_SEC_LEVEL_AUTHPRIV) {
-            if (generate_Ku(session->securityAuthProto, session->securityAuthProtoLen, (unsigned char *)priv_pass, strlen(priv_pass), session->securityPrivKey, &session->securityPrivKeyLen) != SNMPERR_SUCCESS){
+            if (generate_Ku(session->securityAuthProto, session->securityAuthProtoLen, (unsigned char *)priv_pass, strlen(priv_pass), session->securityPrivKey, &session->securityPrivKeyLen) != SNMPERR_SUCCESS) {
                 printf("Error generating PRIV sess\n");
-            }   
+            }
         }
     }
 
