@@ -50,16 +50,15 @@ struct ifStruct {
     int     err_disable;
     char    descr[MAX_DESCR_LEN];
     char    alias[MAX_DESCR_LEN];
-    char    name[MAX_DESCR_LEN];
     u64     inOctets;
     u64     outOctets;
     unsigned long   inDiscards;
     unsigned long   outDiscards;
     unsigned long   inErrors;
     unsigned long   outErrors;
-    unsigned long   inUcast;
-    unsigned long   outUcast;
     u64     speed;
+    u64     inbitps;
+    u64     outbitps;
 };
 
 struct OIDStruct {
@@ -80,9 +79,9 @@ static char *if_vars_default[] = {
             "outDiscards",
             "inErrors",
             "outErrors",
-            "inUcast",
-            "outUcast",
-            "speed" };
+            "speed",
+            "inbitps",
+            "outbitps" };
 
 
 /*
@@ -112,21 +111,10 @@ static char *oid_extended[] = {
     ".1.3.6.1.2.1.2.2.1.5",    /* ifSpeed */
     ".1.3.6.1.2.1.31.1.1.1.15",/* ifHighSpeed */
     ".1.3.6.1.2.1.31.1.1.1.18",/* alias */
-    ".1.3.6.1.2.1.31.1.1.1.1", /* name */
     0
 };
-
-static char *oid_extended_cisco[] = {
-    ".1.3.6.1.4.1.9.5.1.4.1.1.23", /* portAdditionalOperStatus */
-    0
-};
-
-
-
 
 static char default_community[] = "public";
-
-
 
 
 /*
@@ -134,8 +122,8 @@ static char default_community[] = "public";
  */
 
 
-const char *modes[] = { "default", "cisco", "nonbulk", "bintec", NULL };
-enum mode_enum { DEFAULT, CISCO, NONBULK, BINTEC };
+const char *modes[] = { "default", "nonbulk", NULL };
+enum mode_enum { DEFAULT,NONBULK };
 
 
 
