@@ -927,6 +927,8 @@ int main(int argc, char *argv[]) {
             //printf("%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
             //printf(" %s=%luc %s=%luc", if_vars[2], interfaces[i].inDiscards, if_vars[3], interfaces[i].outDiscards);
             //printf(" %s=%luc %s=%luc", if_vars[4], interfaces[i].inErrors, if_vars[5], interfaces[i].outErrors);
+            printf(" %s=%llu %s=%llu", if_vars[7], interfaces[i].inbitps, if_vars[8], interfaces[i].outbitps);
+            
             if (speed) {
                 printf(" %s=%llu", if_vars[6], speed);
             } else {
