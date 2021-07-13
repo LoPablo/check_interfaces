@@ -928,9 +928,9 @@ int main(int argc, char *argv[]) {
             //printf(" %s=%luc %s=%luc", if_vars[2], interfaces[i].inDiscards, if_vars[3], interfaces[i].outDiscards);
             //printf(" %s=%luc %s=%luc", if_vars[4], interfaces[i].inErrors, if_vars[5], interfaces[i].outErrors);
             if (speed) {
-                printf(" %s=%llu", if_vars[8], speed);
+                printf(" %s=%llu", if_vars[6], speed);
             } else {
-                printf(" %s=%llu", if_vars[8], interfaces[i].speed);
+                printf(" %s=%llu", if_vars[6], interfaces[i].speed);
             }
         }
     }
