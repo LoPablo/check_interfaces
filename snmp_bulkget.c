@@ -934,11 +934,11 @@ int main(int argc, char *argv[]) {
                 printf(" %s=%llu", if_vars[6], interfaces[i].speed);
             }
             if (fpOldPerfdata) {
-                fprintf(" %s%s::", prefix ? prefix : "", oldperfdata[i].descr);
-                fprintf("%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
-                fprintf("%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
-                fprintf(" %s=%luc %s=%luc", if_vars[2], interfaces[i].inDiscards, if_vars[3], interfaces[i].outDiscards);
-                fprintf(" %s=%luc %s=%luc", if_vars[4], interfaces[i].inErrors, if_vars[5], interfaces[i].outErrors);
+                fprintf(fpOldPerfdata, " %s%s::", prefix ? prefix : "", oldperfdata[i].descr);
+                fprintf(fpOldPerfdata, "%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
+                fprintf(fpOldPerfdata, "%s=%lluc %s=%lluc", if_vars[0], interfaces[i].inOctets, if_vars[1], interfaces[i].outOctets);
+                fprintf(fpOldPerfdata, " %s=%luc %s=%luc", if_vars[2], interfaces[i].inDiscards, if_vars[3], interfaces[i].outDiscards);
+                fprintf(fpOldPerfdata, " %s=%luc %s=%luc", if_vars[4], interfaces[i].inErrors, if_vars[5], interfaces[i].outErrors);
             }
         }
     }
