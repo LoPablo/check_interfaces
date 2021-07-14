@@ -841,11 +841,11 @@ int main(int argc, char *argv[]) {
                 if (oldperfdata[i].inErrors && oldperfdata[i].outErrors && (interfaces[i].inErrors > (oldperfdata[i].inErrors + (unsigned long)err_tolerance) || interfaces[i].outErrors > (oldperfdata[i].outErrors + (unsigned long)coll_tolerance))) {
                     if (oldperfdatap && !interfaces[i].ignore) {
                         if (get_aliases_flag && strlen(interfaces[i].alias)) {
-                            addstr(&perf, "[WARNING] %s (%s) has", interfaces[i].descr, interfaces[i].alias);
+                            //addstr(&perf, "[WARNING] %s (%s) has", interfaces[i].descr, interfaces[i].alias);
                             addstr(&out, ", %s (%s) has %lu errors", interfaces[i].descr, interfaces[i].alias, (interfaces[i].inErrors + interfaces[i].outErrors - oldperfdata[i].inErrors - oldperfdata[i].outErrors));
 
                         } else {
-                            addstr(&perf, "[WARNING] %s has", interfaces[i].descr);
+                            //addstr(&perf, "[WARNING] %s has", interfaces[i].descr);
                             addstr(&out, ", %s has %lu errors", interfaces[i].descr, (interfaces[i].inErrors + interfaces[i].outErrors - oldperfdata[i].inErrors - oldperfdata[i].outErrors));
                         }
 
@@ -868,6 +868,15 @@ int main(int argc, char *argv[]) {
                 }
 
                 if ((bw > 0) && ((int)inload > bw || (int)outload > bw)) {
+                    if (get_aliases_flag && strlen(interfaces[i].alias)) {
+                        //addstr(&perf, "[WARNING] %s (%s) has", interfaces[i].descr, interfaces[i].alias);
+                        addstr(&out, ", %s (%s) has exceeded the bandwidth threshold IN: %0.2f%%/%0.2f%% OUT: %0.2f%%/%0.2f%%", interfaces[i].descr, interfaces[i].alias, inload, bw, outload, bw);
+
+                    } else {
+                        //addstr(&perf, "[WARNING] %s has", interfaces[i].descr);
+                        addstr(&out, ", %s has %lu errors", interfaces[i].descr, (interfaces[i].inErrors + interfaces[i].outErrors - oldperfdata[i].inErrors - oldperfdata[i].outErrors));
+                    }
+                    warnflag++;
                     warn++;
                 }
             }
@@ -890,7 +899,7 @@ int main(int argc, char *argv[]) {
                 gauge_to_si(outbitps, &outs);
                 interfaces[i].inbitps = inbitps;
                 interfaces[i].outbitps = outbitps;
-                addstr(&perf, "   In: %sbps(%0.2f%%) Out:%sbps(%0.2f%%)", ins, inload, outs, outload);
+                addstr(&perf, "   In: %sbps(%0.2f%%) Out: %sbps(%0.2f%%)", ins, inload, outs, outload);
                 free(ins);
                 free(outs);
             }
