@@ -870,7 +870,7 @@ int main(int argc, char *argv[]) {
                 if ((bw > 0) && ((int)inload > bw || (int)outload > bw)) {
                     if (get_aliases_flag && strlen(interfaces[i].alias)) {
                         //addstr(&perf, "[WARNING] %s (%s) has", interfaces[i].descr, interfaces[i].alias);
-                        addstr(&out, ", %s (%s) has exceeded the bandwidth threshold IN: %0.2f%%/%0.2f%% OUT: %0.2f%%/%0.2f%%", interfaces[i].descr, interfaces[i].alias, inload, bw, outload, bw);
+                        addstr(&out, ", %s (%s) has exceeded the bandwidth threshold IN: %0.2f%%/%d% OUT: %0.2f%%/%d%", interfaces[i].descr, interfaces[i].alias, inload, bw, outload, bw);
 
                     } else {
                         //addstr(&perf, "[WARNING] %s has", interfaces[i].descr);
