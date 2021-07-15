@@ -665,7 +665,7 @@ int main(int argc, char *argv[]) {
             }
 
             /* now fetch the extended oids (64 bit counters etc.) */
-            if (create_request(ss, &OIDp, oid_extended, interfaces[j].index,  &response)) {
+            if (create_request(ss, &OIDp, oid_extended, interfaces[j].index, &response)) {
                 for (vars = response->variables; vars; vars = vars->next_variable) {
                     k = -1;
                     /* compare the received value to the requested value */
@@ -725,29 +725,29 @@ int main(int argc, char *argv[]) {
                     switch (k) /* the offset into oid_extended */
                     {
                         case 0: /* hh3cTransceiverType */
-                            if (vars->type == ASN_OCTET_STR && vars->val_len == 2 ){
+                            if (vars->type == ASN_OCTET_STR && vars->val_len == 2) {
                                 MEMCPY(interfaces[j].hh3cTransceiverType, vars->val.string, vars->val_len);
                             }
                             break;
                         case 1: /* hh3cTransceiverWaveLength */
-                            if (vars->type == ASN_INTEGER){
+                            if (vars->type == ASN_INTEGER) {
                                 interfaces[j].hh3cTransceiverWaveLength = *(vars->val.integer);
-                            }                                
+                            }
                             break;
                         case 2: /* hh3cTransceiverVendorName */
-                            if (vars->type == ASN_OCTET_STR ){
+                            if (vars->type == ASN_OCTET_STR) {
                                 MEMCPY(interfaces[j].hh3cTransceiverVendorName, vars->val.string, vars->val_len);
                             }
                             break;
                         case 3: /* hh3cTransceiverCurTXPower */
-                            if (vars->type == ASN_INTEGER){
+                            if (vars->type == ASN_INTEGER) {
                                 interfaces[j].hh3cTransceiverCurTXPower = *(vars->val.integer);
-                            }                                
+                            }
                             break;
                         case 4: /* hh3cTransceiverCurRXPower */
-                            if (vars->type == ASN_INTEGER){
+                            if (vars->type == ASN_INTEGER) {
                                 interfaces[j].hh3cTransceiverCurRXPower = *(vars->val.integer);
-                            }  
+                            }
                             break;
                     }
                 }
@@ -950,6 +950,10 @@ int main(int argc, char *argv[]) {
                 free(ins);
                 free(outs);
             }
+            if (interfaces[i].hh3cTransceiverVendorName) {
+                addstr(&perf, "   SFP Module: %s, %s, %d", interfaces[i].hh3cTransceiverType, interfaces[i].hh3cTransceiverVendorName, interfaces[i].hh3cTransceiverWaveLength);
+            }
+
             if (perf.len > 0u && perf.text[(perf.len - 1u)] != '\n') {
                 addstr(&perf, "\n");
             }
