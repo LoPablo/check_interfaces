@@ -58,6 +58,11 @@ struct ifStruct {
     u64 speed;
     u64 inbitps;
     u64 outbitps;
+    char hh3cTransceiverType[2];
+    int hh3cTransceiverWaveLength;
+    char hh3cTransceiverVendorName[MAX_STRING];
+    int hh3cTransceiverCurTXPower;
+    int hh3cTransceiverCurRXPower;
 };
 
 struct OIDStruct {
@@ -78,7 +83,12 @@ static char *if_vars_default[] = {
     "outErrors",
     "speed",
     "inbitps",
-    "outbitps"};
+    "outbitps",
+    "hh3cTransceiverType",
+    "hh3cTransceiverWaveLengt",
+    "hh3cTransceiverVendorName",
+    "hh3cTransceiverCurTXPower",
+    "hh3cTransceiverCurRXPower"};
 
 /*
  * OIDs, hardcoded to remove the dependency on MIBs
@@ -105,6 +115,14 @@ static char *oid_extended[] = {
     ".1.3.6.1.2.1.2.2.1.5",     /* ifSpeed */
     ".1.3.6.1.2.1.31.1.1.1.15", /* ifHighSpeed */
     ".1.3.6.1.2.1.31.1.1.1.18", /* alias */
+    0};
+
+static char *oid_transceiver[] = {
+    ".1.3.6.1.4.1.25506.2.70.1.1.1.2",  /* hh3cTransceiverType */
+    ".1.3.6.1.4.1.25506.2.70.1.1.1.3",  /* hh3cTransceiverWaveLength */
+    ".1.3.6.1.4.1.25506.2.70.1.1.1.4",  /* hh3cTransceiverVendorName */
+    ".1.3.6.1.4.1.25506.2.70.1.1.1.9",  /* hh3cTransceiverCurTXPower */
+    ".1.3.6.1.4.1.25506.2.70.1.1.1.12", /* hh3cTransceiverCurRXPower */
     0};
 
 static char default_community[] = "public";
