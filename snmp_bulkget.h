@@ -58,7 +58,7 @@ struct ifStruct {
     u64 speed;
     u64 inbitps;
     u64 outbitps;
-    char hh3cTransceiverType[2];
+    char hh3cTransceiverType[MAX_DESCR_LEN];
     int hh3cTransceiverWaveLength;
     char hh3cTransceiverVendorName[MAX_STRING];
     int hh3cTransceiverCurTXPower;

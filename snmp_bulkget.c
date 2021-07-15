@@ -725,7 +725,7 @@ int main(int argc, char *argv[]) {
                     switch (k) /* the offset into oid_extended */
                     {
                         case 0: /* hh3cTransceiverType */
-                            if (vars->type == ASN_OCTET_STR && vars->val_len == 2) {
+                            if (vars->type == ASN_OCTET_STR) {
                                 MEMCPY(interfaces[j].hh3cTransceiverType, vars->val.string, vars->val_len);
                             }
                             break;
@@ -950,7 +950,7 @@ int main(int argc, char *argv[]) {
                 free(ins);
                 free(outs);
             }
-            if (interfaces[i].hh3cTransceiverVendorName) {
+            if (interfaces[i].hh3cTransceiverCurRXPower) {
                 addstr(&perf, "   SFP Module: %s, %s, %d", interfaces[i].hh3cTransceiverType, interfaces[i].hh3cTransceiverVendorName, interfaces[i].hh3cTransceiverWaveLength);
             }
 
