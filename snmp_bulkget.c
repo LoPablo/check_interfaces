@@ -679,6 +679,51 @@ int main(int argc, char *argv[]) {
 
                     switch (k) /* the offset into oid_extended */
                     {
+                        case 0: /* ifHCInOctets */
+                            if (vars->type == ASN_COUNTER64)
+                                interfaces[j].inOctets = convertto64((vars->val.counter64), 0);
+                            break;
+                        case 1: /* ifHCOutOctets */
+                            if (vars->type == ASN_COUNTER64)
+                                interfaces[j].outOctets = convertto64((vars->val.counter64), 0);
+                            break;
+                        case 2: /* ifSpeed */
+                            /* don't overwrite a high-speed value */
+                            if (vars->type == ASN_GAUGE && !(interfaces[j].speed))
+                                interfaces[j].speed = *(vars->val.integer);
+                            break;
+                        case 3: /* ifHighSpeed */
+                            if (vars->type == ASN_GAUGE)
+                                /* convert to bits / sec */
+                                interfaces[j].speed = ((u64) * (vars->val.integer)) * 1000000ULL;
+                            break;
+                        case 4: /* alias */
+                            if (vars->type == ASN_OCTET_STR)
+                                MEMCPY(interfaces[j].alias, vars->val.string, vars->val_len);
+                            break;
+                    }
+                }
+                if (response) {
+                    snmp_free_pdu(response);
+                    response = 0;
+                }
+            }
+
+            /* now fetch the transceiver oids*/
+            if (create_request(ss, &OIDp, oid_transceiver, interfaces[j].index, &response)) {
+                for (vars = response->variables; vars; vars = vars->next_variable) {
+                    k = -1;
+                    /* compare the received value to the requested value */
+                    for (i = 0; oid_transceiver[i]; i++) {
+                        if (!memcmp(OIDp[i].name, vars->name,
+                                    OIDp[i].name_len * sizeof(oid))) {
+                            k = i;
+                            break;
+                        }
+                    }
+
+                    switch (k) /* the offset into oid_extended */
+                    {
                         case 0: /* hh3cTransceiverType */
                             if (vars->type == ASN_OCTET_STR && vars->val_len == 2 ){
                                 MEMCPY(interfaces[j].hh3cTransceiverType, vars->val.string, vars->val_len);
@@ -703,51 +748,6 @@ int main(int argc, char *argv[]) {
                             if (vars->type == ASN_INTEGER){
                                 interfaces[j].hh3cTransceiverCurRXPower = *(vars->val.integer);
                             }  
-                            break;
-                    }
-                }
-                if (response) {
-                    snmp_free_pdu(response);
-                    response = 0;
-                }
-            }
-
-            /* now fetch the transceiver oids*/
-            if (create_request(ss, &OIDp, oid_transceiver, interfaces[j].index, &response)) {
-                for (vars = response->variables; vars; vars = vars->next_variable) {
-                    k = -1;
-                    /* compare the received value to the requested value */
-                    for (i = 0; oid_transceiver[i]; i++) {
-                        if (!memcmp(OIDp[i].name, vars->name,
-                                    OIDp[i].name_len * sizeof(oid))) {
-                            k = i;
-                            break;
-                        }
-                    }
-
-                    switch (k) /* the offset into oid_transceiver */
-                    {
-                        case 0: /* hh3cTransceiverType */
-                            if (vars->type == ASN_COUNTER64)
-                                interfaces[j].inOctets = convertto64((vars->val.counter64), 0);
-                            break;
-                        case 1: /* hh3cTransceiverWaveLength */
-                            if (vars->type == ASN_COUNTER64)
-                                interfaces[j].outOctets = convertto64((vars->val.counter64), 0);
-                            break;
-                        case 2: /* hh3cTransceiverVendorName */
-                            /* don't overwrite a high-speed value */
-                            if (vars->type == ASN_GAUGE && !(interfaces[j].speed))
-                                interfaces[j].speed = *(vars->val.integer);
-                            break;
-                        case 3: /* hh3cTransceiverCurTXPower */
-                            if (vars->type == ASN_GAUGE)
-                                /* convert to bits / sec */
-                                interfaces[j].speed = ((u64) * (vars->val.integer)) * 1000000ULL;
-                            break;
-                        case 4: /* hh3cTransceiverCurRXPower */
-                            if (vars->type == ASN_OCTET_STR)
-                                MEMCPY(interfaces[j].alias, vars->val.string, vars->val_len);
                             break;
                     }
                 }
