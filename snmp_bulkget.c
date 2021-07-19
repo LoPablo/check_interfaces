@@ -485,8 +485,7 @@ int main(int argc, char *argv[]) {
                 printf("Error in packet\nReason: %s\n",
                        snmp_errstring(response->errstat));
             else if (status == STAT_TIMEOUT) {
-                printf("Timeout while reading interface descriptions from %s\n",
-                       session.peername);
+                printf("Timeout while reading interface descriptions from %s\n",  session.peername);
                 exit(EXITCODE_TIMEOUT);
             } else if (status == STAT_ERROR && ss->s_snmp_errno == SNMPERR_TIMEOUT) {
                 printf("Timeout\n");
@@ -951,7 +950,7 @@ int main(int argc, char *argv[]) {
                 free(outs);
             }
             if (interfaces[i].hh3cTransceiverCurRXPower) {
-                addstr(&perf, "   SFP Module: %s, %s, %d", interfaces[i].hh3cTransceiverType, interfaces[i].hh3cTransceiverVendorName, interfaces[i].hh3cTransceiverWaveLength);
+                addstr(&perf, "   SFP Module: %s, %s, %dnm", interfaces[i].hh3cTransceiverType, interfaces[i].hh3cTransceiverVendorName, interfaces[i].hh3cTransceiverWaveLength);
             }
 
             if (perf.len > 0u && perf.text[(perf.len - 1u)] != '\n') {
