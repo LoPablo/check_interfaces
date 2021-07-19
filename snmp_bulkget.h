@@ -95,6 +95,7 @@ static char *if_vars_default[] = {
  */
 static char *oid_if_bulkget[] = {".1.3.6.1.2.1.1.3", ".1.3.6.1.2.1.2.1", ".1.3.6.1.2.1.2.2.1.2", 0};   /* "uptime", "ifNumber", "ifDescr" */
 static char *oid_if_get[] = {".1.3.6.1.2.1.1.3.0", ".1.3.6.1.2.1.2.1.0", ".1.3.6.1.2.1.2.2.1.2.1", 0}; /* "uptime", "ifNumber", "ifDescr" */
+static char *oid_if_securepoint_get[] = {".1.3.6.1.2.1.1.3.0", ".1.3.6.1.2.1.2.1.0", ".1.3.6.1.2.1.31.1.1.1.1.1", 0}; /* "uptime", "ifNumber", "ifName" */
 static char *oid_alias_bulkget[] = {".1.3.6.1.2.1.31.1.1.1.18", 0};                                    /* "alias" */
 static char *oid_alias_get[] = {".1.3.6.1.2.1.31.1.1.1.18.1", 0};                                      /* "alias" */
 
@@ -131,9 +132,10 @@ static char default_community[] = "public";
  * operating modes
  */
 
-const char *modes[] = {"default", "nonbulk", NULL};
+const char *modes[] = {"default", "nonbulk","securepoint", NULL};
 enum mode_enum { DEFAULT,
-                 NONBULK };
+                 NONBULK,
+                 SECUREPOINT };
 
 /*
  * prototypes

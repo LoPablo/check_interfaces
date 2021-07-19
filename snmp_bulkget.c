@@ -359,6 +359,10 @@ int main(int argc, char *argv[]) {
         oid_ifp = oid_if_get;
         size = (sizeof(oid_if_get) / sizeof(char *)) - 1;
         oid_aliasp = oid_alias_get;
+    } else if(mode == SECUREPOINT){
+        oid_ifp = oid_if_securepoint_get;
+        size = (sizeof(oid_if_get) / sizeof(char *)) - 1;
+        oid_aliasp = oid_alias_get;
     } else {
         oid_ifp = oid_if_bulkget;
         size = (sizeof(oid_if_bulkget) / sizeof(char *)) - 1;
@@ -384,7 +388,7 @@ int main(int argc, char *argv[]) {
             /* we have not received all interfaces in the preceding packet, so fetch
        * the next lot */
 
-            if (mode == NONBULK)
+            if (mode == NONBULK || mode==SECUREPOINT)
                 pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
             else {
                 pdu = snmp_pdu_create(SNMP_MSG_GETBULK);
@@ -523,7 +527,7 @@ int main(int argc, char *argv[]) {
                 /* we have not received all aliases in the preceding packet, so fetch
          * the next lot */
 
-                if (mode == NONBULK)
+                if (mode == NONBULK || mode==SECUREPOINT)
                     pdu = snmp_pdu_create(SNMP_MSG_GETNEXT);
                 else {
                     pdu = snmp_pdu_create(SNMP_MSG_GETBULK);
@@ -1375,7 +1379,7 @@ void create_pdu(int mode, char **oidlist, netsnmp_pdu **pdu, struct OIDStruct **
     int i;
     static char **oid_ifp;
 
-    if (mode == NONBULK)
+    if (mode == NONBULK || mode == SECUREPOINT)
         *pdu = snmp_pdu_create(SNMP_MSG_GET);
     else {
         /* get the ifNumber and as many interfaces as possible */
